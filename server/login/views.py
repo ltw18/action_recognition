@@ -61,7 +61,7 @@ def upload(request):
     return render(request, 'upload.html', {'forms': upload_video})
     
 def handle_uploaded_file(f):
-    with open('upload/'+f.name, 'wb+') as destination:
+    with open('../../upload/'+f.name, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
     alarm_action,alarm_date,suggestion = video_analysis(destination)

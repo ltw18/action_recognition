@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0 python keypoints_from_video.py
