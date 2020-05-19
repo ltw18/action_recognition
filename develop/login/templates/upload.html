@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据平台</title>
+</head>
+<body>
+    <header>
+        数据上传
+    </header>
+
+    <section>
+        <form enctype="multipart/form-data" action=""  method='POST'>{% csrf_token %}
+            {{forms.as_p}}
+            <!-- <input type='file' name = 'myfile'><br> -->
+            <input type='submit' value='提交并分析'>
+        </form>
+    </section>
+    <footer>
+        copyright tingting
+    </footer>
+    <style>
+        header {
+            background-color:green;
+            color:white;
+            text-align:center;
+            padding:5px; 
+            font-size: 30px;
+        }
+        nav {
+            line-height:30px;
+            font-size: 40px;
+            height:20px;
+            width:150px;
+            border:1px solid #000; 
+            background:transparent; 
+        }
+        section {
+            /* width:400px; */
+            float:center;
+            padding:150px;
+            text-align:center;
+            margin: auto;
+            font-size: 20px;
+            width:400px; 
+            height:150px;
+            border:1px solid #000; 
+            background:transparent; 
+        }
+        footer {
+            background-color:green;
+            color:white;
+            clear:both;
+            text-align:center;
+            padding:5px; 
+        }
+    </style>  
+</body>
+</html>

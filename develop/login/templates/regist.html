@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>regist</title>
+</head>
+<body>
+    <header>
+        注册
+    </header>
+    <section>
+    {% if error %}    
+    <p style="color: red;">
+    {{error}}
+    </p>
+    {% endif %}
+    </section>
+    <a href='http://127.0.0.1:8000/login/'>login</a> 
+    <section>
+        <form action="" method='POST'>{% csrf_token %}
+            <!-- username:<input type="text" name="username">
+            password:<input type="password" name='password'>
+            <input type='submit' value='submit'> -->
+            {{forms.as_p}}
+            <input type='submit' value='submit'>
+        </form>
+        
+    </section>
+    <footer>
+        copyright tingting
+    </footer>
+    <style>
+        header {
+            background-color:green;
+            color:white;
+            text-align:center;
+            padding:5px; 
+        }
+        nav {
+            line-height:30px;
+            background-color:#eeeeee;
+            height:300px;
+            width:100px;
+            float:left;
+            padding:5px; 
+        }
+        section {
+            /* width:400px; */
+            float:center;
+            padding:10px;
+            text-align:center;
+        }
+        footer {
+            background-color:green;
+            color:white;
+            clear:both;
+            text-align:center;
+            padding:5px; 
+        }
+    </style>  
+</body>
+</html>

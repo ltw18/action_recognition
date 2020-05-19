@@ -126,10 +126,9 @@ class Action(object):
                 self.result[act] = second
         return self.result
 
-    def Online_Analysis(self):
+    # def Online_Analysis(self):
         
 
 if __name__ == '__main__':
     s = Action()
     s.recognition("/data/zhangruiwen/openpose/05video/video.mp4")
-   

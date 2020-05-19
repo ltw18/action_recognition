@@ -1,0 +1,1 @@
+The results of action recognition are saved in this folder.
