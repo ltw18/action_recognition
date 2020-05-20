@@ -3,8 +3,8 @@ from django.http import HttpResponse,HttpResponseRedirect
 from .forms import logining,registing,upload_video,choose_video
 from .models import User, Video
 import os
-import camera_show
-import video_analysis
+# from camera_show import camera_show
+from video_analysis import analysis
 # from .open_video import *
 # Create your views here.
 def regist(request):
@@ -52,26 +52,29 @@ def upload(request):
         if my_form.is_valid():
             f = my_form.cleaned_data['myfile']
             alarm_action,alarm_date,suggestion = handle_uploaded_file(f)
-            context = {
-                'alarm_action':alarm_action,
-                'alarm_date':alarm_date,
-                'suggestion':suggestion
+            con = {
+                'filename': f,
+                'suggestion':suggestion,
+                'alarm_action_1':alarm_action[0],
+                'alarm_date_1':alarm_date[0],
+                'alarm_action_2':alarm_action[1],
+                'alarm_date_2':alarm_date[1],
             }
-            return HttpResponseRedirect(request,'analysis.html',context = context)  
+            return render(request,'analysis.html',context=con)
+            # return render(request,'analysis.html',{'alarm_action':alarm_action,
+            #     'alarm_date':alarm_date,
+            #     'suggestion':suggestion})  
     return render(request, 'upload.html', {'forms': upload_video})
     
 def handle_uploaded_file(f):
-    with open('../../upload/'+f.name, 'wb+') as destination:
+    path = '../upload/'+f.name
+    with open(path, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
-    alarm_action,alarm_date,suggestion = video_analysis(destination)
+    alarm_action,alarm_date,suggestion = analysis(path)
     return alarm_action,alarm_date,suggestion
-    # frames = cv2.  
-    # analysis(destination)
+
     
-def analysis(request):
-    
-    return HttpResponse('hello')
 
 def open_video(request):
     if request.method == "POST":
@@ -79,6 +82,8 @@ def open_video(request):
         camera = request.POST.get('place_open')
         method = request.POST.get('action_type') 
         if camera =='1' and method =='2':
-            camera_show
+            # camera_show
+            return HttpResponse('hello')
         else:return HttpResponse('service isnot prepared')
     return render(request, 'video_platform.html', {'forms':choose_video})
+

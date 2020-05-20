@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
-    <style>
-       
-    </style>
+    <title>analysis</title>
 </head>
 <body>
     <header>
@@ -14,10 +11,28 @@
     </header>
     <a href="http://127.0.0.1:8000/data_platform/">返回</a> 
     <section>
-        {{alarm_action}} <br>
+        <!-- {{alarm_action}} <br>
         {{alarm_date}} <br>
-        {{suggestion}} <br>
-
+        {{suggestion}} <br> -->
+        <table border="1">
+            <caption>{{filename}}</caption>
+            <tr>
+              <th>Action</th>
+              <th>Time</th>
+              <th>Times</th>
+            </tr>
+            <tr>
+              <td>{{alarm_action_1}}</td>
+              <td>{{alarm_date_1}}</td>
+              <td>{{times}}</td>
+            </tr>
+            <tr>
+              <td>{{alarm_action_2}}</td>
+              <td>{{alarm_date_2}}</td>
+              <td>{{times}}</td>
+            </tr>
+          </table>
+         <p>suggestion: {{suggestion}}</p>
     </section>
     <footer>
         copyright tingting
@@ -29,13 +44,26 @@
             text-align:center;
             padding:5px; 
         }
-        nav {
-            line-height:30px;
+        p {
+       color: green;
+       font-size:20px;
+       float:center
+
+        }
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+            text-align: center;
             background-color:#eeeeee;
-            height:300px;
-            width:100px;
-            float:left;
-            padding:5px; 
+            float:center;
+            padding:10px; 
+        }
+        table td, table th
+        {
+            border: 1px solid #cad9ea;
+            color: #666;
+            height: 30px;
+            width: 150px
         }
         section {
             /* width:400px; */
@@ -50,6 +78,19 @@
             text-align:center;
             padding:5px; 
         }
+        a:link,
+        a:visited     {
+        color:green;
+        text-decoration:underline;
+        font-size:20px
+        }
+        
+        a:hover,
+        a:active    {
+        color:#000000;
+        text-decoration:none;
+        }
+    
     </style>  
 </body>
 </html>

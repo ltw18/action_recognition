@@ -1,0 +1,11 @@
+act_weights: /home/zhangruiwen/05skeleton/03code/01ltw18_demo/action_recognition/models/action/tcn_bone-79-150240.pt
+model_folder: ../models
+prototxt_path: pose/coco/pose_deploy_linevec.prototxt
+caffemodel_path: pose/coco/pose_iter_440000.caffemodel
+model_pose: 'COCO'
+
+label: ['Run','Jump','Walk','Stand','Wave']
+alarm_action: ['Jump', 'Run']
+
+time_threshold: 5
+frame_interval: 1

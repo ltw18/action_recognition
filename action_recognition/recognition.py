@@ -6,7 +6,8 @@ from collections import OrderedDict
 from action_recognition.tgn import Model
 
 class TGN(object):
-    def __init__(self, size=(1920,1080), device=[0], weights='./models/action/tcn_bone-79-150240.pt'):
+    def __init__(self, size=(1920,1080), device=[0], 
+            weights='/home/zhangruiwen/05skeleton/03code/01ltw18_demo/action_recognition/models/action/tcn_bone-79-150240.pt'):
         self.device = device
         self.weights = weights
         self.vsize = size

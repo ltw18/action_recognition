@@ -26,5 +26,5 @@ urlpatterns = [
     path('data_platform/',views.data_platform),
     path('upload/',views.upload),
     path('analysis/',views.analysis),
-    path('video_platform/',views.open_video)
+    path('video_platform/',views.open_video),
 ]
