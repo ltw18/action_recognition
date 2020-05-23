@@ -26,6 +26,7 @@ class Action(object):
         self.result = {}
         for k in alarm_action:
             self.result[k] = []
+        self.skeleton_sequence = {}
 
     def Filter_valid_pionts(self, keyPoints, valid_num=11):
         if len(keyPoints.shape)<2:
@@ -69,7 +70,6 @@ class Action(object):
         cv2.putText(img, word+' Act: '+str(act), (50, 300+j*50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0,0,250), 3)
 
     def Offline_Analysis(self, video_path, video_save=None, image_save=None, step=6):
-        skeleton_sequence = {}
         frame_cnt = 0
         cap = cv2.VideoCapture(video_path)
         fps, size = int(cap.get(cv2.CAP_PROP_FPS)), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), 
@@ -102,14 +102,14 @@ class Action(object):
             bbox = self.Get_bbox(validpoints)
             IDs = self.mot_tracker.update(bbox).astype(np.int)
             for j, (x1,y1,x2,y2,o_id) in enumerate(IDs):
-                if o_id in skeleton_sequence.keys():
-                    skeleton_sequence[o_id].append(validpoints[j])
+                if o_id in self.skeleton_sequence.keys():
+                    self.skeleton_sequence[o_id].append(validpoints[j])
                 else:
-                    skeleton_sequence[o_id] = [validpoints[j]]
+                    self.skeleton_sequence[o_id] = [validpoints[j]]
 
-                if len(skeleton_sequence[o_id])==self.reg_frame:
-                    res = self.act_reg.predict(np.array(skeleton_sequence[o_id]))
-                    skeleton_sequence[o_id].pop(0)
+                if len(self.skeleton_sequence[o_id])==self.reg_frame:
+                    res = self.act_reg.predict(np.array(self.skeleton_sequence[o_id]))
+                    self.skeleton_sequence[o_id].pop(0)
                     self.result = self.alarm(res, frame_cnt)
                 else:
                     res = 'None'
@@ -123,9 +123,12 @@ class Action(object):
         print(time.time()-b)
         return self.result
 
-    def alarm(self, res, frame_cnt, threshold=5):
+    def alarm(self, res, frame_cnt=-1, threshold=5):
+        def alarm_level(action):
+            return 1
         act = res.split()[0]
-        # print(act)
+        if frame_cnt<0: 
+            return alarm_level(act)
         if act in self.result.keys():
             second = round(frame_cnt/self.fps)
             if self.result[act]:
@@ -135,8 +138,33 @@ class Action(object):
                 self.result[act] = [second]
         return self.result
 
-    def Online_Analysis(self):
-        pass
+    def Online_Analysis(self, image, video_save=None, image_save=None):
+        result = []
+        self.datum.cvInputData = image
+        self.opWrapper.emplaceAndPop([self.datum])
+        keyPoints = self.datum.poseKeypoints
+            
+        validpoints, num_p, all_p = self.Filter_valid_pionts(keyPoints)
+        
+        # print('\n------- Frame:', frame_cnt,'| Valid num:', num_p, '| People num:', all_p, '--------')
+        if num_p==0: return result
+        bbox = self.Get_bbox(validpoints)
+        # print(bbox)
+        IDs = self.mot_tracker.update(bbox).astype(np.int)
+        res='no'
+        for j, (x1,y1,x2,y2,o_id) in enumerate(IDs):
+            if o_id in self.skeleton_sequence.keys():
+                self.skeleton_sequence[o_id].append(validpoints[j])
+            else:
+                self.skeleton_sequence[o_id] = [validpoints[j]]
+            print(len(self.skeleton_sequence[o_id]), self.reg_frame)
+            if len(self.skeleton_sequence[o_id])>=self.reg_frame:
+                res = self.act_reg.predict(np.array(self.skeleton_sequence[o_id]))
+                self.skeleton_sequence[o_id].pop(0)
+                result.append((o_id, res, self.alarm(res)))
+                print(IDs, res)
+        # print('NUM',num_p, IDs, res)
+        return result
 
 if __name__ == '__main__':
     s = Action()

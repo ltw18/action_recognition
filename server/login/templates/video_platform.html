@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,11 +10,91 @@
     <header>
         视频查看
     </header>
+        <!-- <img src=".//camera.png" height="200"> -->
+    <!-- <img src="/static/camera.png" /> -->
+    <!-- <input type="button" title="开启摄像头" value="开启摄像头" onclick="getMedia()" /> -->
+    <video id="video" width="500px" height="500px" autoplay="autoplay"></video>
+    <input style="width:300px;" type="text" id="action" value="ID：某人, Action： ——|—— %, Alarm：—— ">
+    <canvas hidden id="canvas"  class="hide"></canvas>
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script>
+        var interval;
+        var close = $('#close'),
+            mediaStreamTrack
+        // c = document.getElementById("open")
+        // c.onclick(function(){
+        function getMedia() {
+            let constraints = {
+            video: {width: 500, height: 500},
+            audio: false
+            };
+            //获得video摄像头区域
+            let video = document.getElementById("video");
+            //这里介绍新的方法，返回一个 Promise对象
+            // 这个Promise对象返回成功后的回调函数带一个 MediaStream 对象作为其参数
+            // then()是Promise对象里的方法
+            // then()方法是异步执行，当then()前的方法执行完后再执行then()内部的程序
+            // 避免数据没有获取到
+            let promise = navigator.mediaDevices.getUserMedia(constraints);
+            promise.then(function (MediaStream) {
+            video.srcObject = MediaStream;
+            video.play();
+            });
+
+            interval = setInterval(clock, 400)  //5fps
+            console.log('open')
+            }
+        // )
+        function closeMedia() {
+            console.log('end')
+            clearInterval(interval);
+            const stream = video.srcObject;
+            const tracks = stream.getTracks();
+
+            tracks.forEach(function(track) {
+                track.stop();
+            });
+
+            video.srcObject = null;
+            }
+        
+        function clock(){
+            console.log('begin')
+            var pic = snap()
+            // console.log(pic)
+            // var formData = new FormData();
+            // formData.append('image', pic)
+            $.ajax({
+                url: 'url',
+                type: 'POST',
+                headers: {"X-CSRFToken":'{{ csrf_token  }}' },
+                data: {'image': pic},
+                dataType:'json',
+                // processData:false,  //不预处理数据  因为FormData 已经做了
+                // contentType:false, 
+                success: function (e) {
+                //通过e获取后端返回的数据并对页面上的显示的东西进行修改
+                    var t=document.getElementById("action");
+                    t.value=e;
+                },
+            })
+        }
+        function snap(){
+            let canvas = document.getElementById('canvas');
+            // canvas.style.display='none'; //this can also work
+            canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
+            return canvas.toDataURL("image/png");
+        }
+    </script>
     <section>
+        <p style="font-size: smaller;color:white;position: left;background:green;">
+            please choose:
+        </p>
         <form action="" method='POST'>{% csrf_token %}
             {{forms.as_p}}
-            <input type='submit' value='打开摄像头'>
-        </form>     
+        </form>   
+        <input id='open' type="submit" value="开启摄像头" onclick="getMedia()">
+        <input type="button" value="关闭摄像头" onclick="closeMedia()">  
     </section>
     <footer>
         copyright tingting
@@ -25,19 +106,17 @@
             text-align:center;
             padding:5px; 
         }
-        nav {
-            line-height:30px;
-            background-color:#eeeeee;
-            height:300px;
-            width:100px;
-            float:left;
-            padding:5px; 
-        }
         section {
             /* width:400px; */
-            float:center;
+            float: left;
             padding:10px;
-            text-align:center;
+            text-align:left;
+            position: absolute;
+            top: 150px;
+            right:600px;
+            font-size: 200%;
+            border:1px green;
+            
         }
         footer {
             background-color:green;
@@ -45,6 +124,8 @@
             clear:both;
             text-align:center;
             padding:5px; 
+            position: relative;
+            top:100px
         }
     </style>  
 </body>

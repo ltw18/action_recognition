@@ -46,8 +46,8 @@ class TGN(object):
     def preprocess(self, data):#T V C
         T, V, C = data.shape
         tmp = np.zeros((1,3,150,V,2))
-        tmp[0, 0, :10, :, 0] = data[...,0]/self.vsize[0]-0.5
-        tmp[0, 1, :10, :, 0] = 0.5-data[...,1]/self.vsize[1]
+        tmp[0, 0, :T, :, 0] = data[...,0]/self.vsize[0]-0.5
+        tmp[0, 1, :T, :, 0] = 0.5-data[...,1]/self.vsize[1]
         return torch.from_numpy(tmp)
 
     def return_label(self, ind):

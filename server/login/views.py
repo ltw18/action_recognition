@@ -1,10 +1,12 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,HttpResponseRedirect
+from django.views.generic import TemplateView
 from .forms import logining,registing,upload_video,choose_video
 from .models import User, Video
 import os
-# from camera_show import camera_show
-from video_analysis import analysis
+import json
+
+from video_analysis import analysis, Online_Analysis, Online_Init
 # from .open_video import *
 # Create your views here.
 def regist(request):
@@ -76,14 +78,21 @@ def handle_uploaded_file(f):
 
     
 
+s_action = None
 def open_video(request):
+    global s_action
     if request.method == "POST":
         # 否则就是POST请求，获取表单中的数据
         camera = request.POST.get('place_open')
         method = request.POST.get('action_type') 
-        if camera =='1' and method =='2':
-            # camera_show
-            return HttpResponse('hello')
-        else:return HttpResponse('service isnot prepared')
+        if camera =='1' and method =='1':
+            s_action = Online_Init()
     return render(request, 'video_platform.html', {'forms':choose_video})
+
+def online(request):
+    if request.method == "POST":
+        img = request.POST.get('image')
+        resstr = Online_Analysis(s_action, img)
+        return HttpResponse(json.dumps(resstr))
+
 
